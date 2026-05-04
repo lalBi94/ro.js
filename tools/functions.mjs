@@ -23,7 +23,6 @@ function drawFunc(plot, cm, func=(x)=>Math.cos(x), x_step=1, color="black")
             ctx.strokeStyle = color
             ctx.arc(pos.x, pos.y, 1, 0, 2 * Math.PI, false);
             ctx.stroke();
-            ctx.closePath();
         } catch(err)
         {
             console.log(err)

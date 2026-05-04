@@ -65,7 +65,7 @@ function showRootReal(cm, scale=5, y_tag="f(x)", x_tag=" x ", dim_x=new Vector2D
 
     ctx.fillStyle = "red"
     ctx.font = "20px 'Courier New'";
-    ctx.fillText(x_tag, canvas.width-40, axes_config.v_center.y+20);
+    ctx.fillText(x_tag, canvas.width-40, axes_config.v_center.y+40);
     
     //y
     createLine(ctx, cm.center, axes_config.max_y_pos, "black")
@@ -96,7 +96,7 @@ function showRootReal(cm, scale=5, y_tag="f(x)", x_tag=" x ", dim_x=new Vector2D
 
     ctx.fillStyle = "red"
     ctx.font = "20px 'Courier New'";
-    ctx.fillText(y_tag, axes_config.h_center.x+20, 40);
+    ctx.fillText(y_tag, axes_config.h_center.x+50, 40);
 
     return axes_config;
 }
@@ -120,7 +120,6 @@ function createLine(ctx, from, to, color="black", dotted=false)
     ctx.beginPath();
     ctx.moveTo(from.x, from.y);
     ctx.lineTo(to.x, to.y)
-    ctx.closePath();
     ctx.stroke()
     ctx.strokeStyle = "transparent"
 

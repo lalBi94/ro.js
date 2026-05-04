@@ -45,10 +45,6 @@
                 |
                 <button class="chapiter">\( e^{i{\theta}} \)-Plane</button>
                 |
-                <button class="chapiter">\( \frac{d}{dx} \)</button>
-                |
-                <button class="chapiter">\( \int \)</button>
-                |
                 <button class="chapiter">\( \mathbb{C} \)-plan</button>
             </div>
 
@@ -80,7 +76,7 @@
 
             <div id="ipt-formula">
                 <p id="formula-latex"></p>
-                <textarea placeholder="f(x)=" type="text" name="" id="formula-ipt">x^2</textarea>
+                <textarea placeholder="Enter functions like this : &#10;7log(x);&#10;x^2;&#10;sin(3x);&#10;..." type="text" name="" id="formula-ipt"></textarea>
             </div>
 
             <hr>
@@ -88,42 +84,52 @@
             <fieldset>
                 <legend>Param:</legend>
 
-                <fieldset>
+                <fieldset id="">
                     <legend>Plot Metrics</legend>
                     
                     <div>
-                        <label for="max-x">-x-axis limit=</label>
-                        <input name="max-x" placeholder="ex: -50,0" value="-50.0" type="number"/>
+                        <label for="max-x">+x-axis limit=</label>
+                        <input id="par-max-x" name="max-x" placeholder="ex: -50,0" type="number"/>
                     </div>
 
                     <div>
-                        <label for="min-x">+x-axis limit=</label>
-                        <input name="min-x" placeholder="ex: 50,0" value="50.0" type="number"/>
+                        <label for="min-x">-x-axis limit=</label>
+                        <input id="par-min-x" name="min-x" placeholder="ex: 50,0" type="number"/>
                     </div>
 
                     <div>
                         <label for="max-y">+y-axis limit=</label>
-                        <input name="max-y" placeholder="ex: 50,0" value="50.0" type="number"/>
+                        <input id="par-max-y" name="max-y" placeholder="ex: 50,0" type="number"/>
                     </div>
 
                     <div>
                         <label for="min-y">-y-axis limit=</label>
-                        <input name="min-y" placeholder="ex: -50,0" value="-50.0" type="number"/>
+                        <input id="par-min-y" name="min-y" placeholder="ex: -50,0" type="number"/>
                     </div>
 
                     <div>
-                        <label for="min-y">step between dots=</label>
-                        <input name="min-y" placeholder="ex: 50,0" value="0.03" type="number"/>
+                        <label for="step-btw-dot">step between dots=</label>
+                        <input id="par-step-btw-dot" name="step-btw-dot" placeholder="ex: 50,0" type="number"/>
                     </div>
 
                     <div>
                         <label for="x-tag">x-axis tag:</label>
-                        <input name="x-tag" placeholder="ex: 50,0" value="x" type="text"/>
+                        <input id="par-x-tag" name="x-tag" placeholder="ex: 50,0" type="text"/>
                     </div>
 
                     <div>
-                        <label for="x-tag">y-axis tag:</label>
-                        <input name="x-tag" placeholder="ex: 50,0" value="f(x)" type="text"/>
+                        <label for="y-tag">y-axis tag:</label>
+                        <input id="par-y-tag" name="y-tag" placeholder="ex: 50,0" type="text"/>
+                    </div>
+
+                    <div>
+                        <label for="x-axis-step">x-axis step=</label>
+                        <input id="par-x-axis-step" name="x-axis-step" placeholder="ex: 1" type="number"/>
+                    </div>
+
+                    <div>
+                        <label for="y-axis-step">y-axis step=</label>
+                        <input id="par-y-axis-step" name="y-axis-step" placeholder="ex: 1" type="number"/>
                     </div>
                 </fieldset>
 
@@ -131,18 +137,18 @@
                     <legend>Lasers</legend>
                     
                     <div>
-                        <input type="checkbox" id="scales" name="scales" checked />
-                        <label for="scales">x-axis</label>
+                        <input type="checkbox" id="par-laser-x" name="par-laser-x" checked />
+                        <label for="par-laser-x">x-axis</label>
                     </div>
 
                     <div>
-                        <input type="checkbox" id="horns" name="horns" />
-                        <label for="horns">y-axis</label>
+                        <input type="checkbox" id="par-laser-y" id="par-laser-y" name="par-laser-y" checked />
+                        <label for="par-laser-y">y-axis</label>
                     </div>
 
                     <div>
-                        <input type="checkbox" id="horns" name="horns" />
-                        <label for="horns">modulus</label>
+                        <input type="checkbox" id="par-laser-modulus" id="par-laser-modulus" name="par-laser-modulus" checked />
+                        <label for="par-laser-modulus">modulus</label>
                     </div>
                 </fieldset>
             </fieldset>
