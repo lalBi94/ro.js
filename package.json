@@ -1,0 +1,12 @@
+{
+  "name": "ro.js",
+  "scripts": {
+    "deploy": "gh-pages -d ."
+  },
+  "author": "lalBi94",
+  "license": "MIT",
+  "packageManager": "pnpm@10.13.1",
+  "dependencies": {
+    "gh-pages": "^6.3.0"
+  }
+}
