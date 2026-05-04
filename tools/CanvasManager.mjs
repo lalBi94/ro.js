@@ -1,4 +1,4 @@
-import Vector2D from "./tools/Vector2D.mjs";
+import Vector2D from "./Vector2D.mjs";
 
 export default class CanvasManager
 {
@@ -13,12 +13,6 @@ export default class CanvasManager
          */
         this.ctx = this.canvas.getContext("2d")
         this.center = new Vector2D(this.canvas.width/2, this.canvas.height/2);
-    }
-
-    initCtx()
-    {
-        this.ctx.scale(1, -1);
-        this.ctx.translate(0, -canvas.height);
     }
 
     /**

@@ -1,4 +1,4 @@
-import CanvasManager from "../canvas_manager.mjs";
+import CanvasManager from "./CanvasManager.mjs";
 import Vector2D from "./Vector2D.mjs";
 
 /**
@@ -16,6 +16,7 @@ function drawFunc(plot, cm, func=(x)=>Math.cos(x), x_step=1, color="black")
         try
         {
             const y_res = func(i)
+            if (!Number.isFinite(y_res)) continue;
             if (Math.abs(y_res) > plot.dim_x.y) continue;
             const pos = new Vector2D(plot.h_center.x+(i* plot.scale), plot.h_center.x-y_res* plot.scale);
             ctx.beginPath();
@@ -26,6 +27,7 @@ function drawFunc(plot, cm, func=(x)=>Math.cos(x), x_step=1, color="black")
         } catch(err)
         {
             console.log(err)
+            continue;
         }
     }
 }

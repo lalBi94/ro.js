@@ -1,0 +1,43 @@
+#control{
+    padding: 20px;
+    border-radius: 12px;
+    height: 90vh;
+    overflow-y: auto;
+    flex:1;
+}
+
+#control > #scale-stats
+{
+    color: black;
+    padding: 10px;
+}
+
+#control > #scale-stats > div > button
+{
+    font-weight: bold;
+    width: 50px;
+    
+}
+
+#control > #pointed-dot-stats
+{
+    color: black;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+#control > #pointed-dot-stats > p
+{
+    border: 1px solid var(--mainc);
+}
+
+#control > #ipt-formula
+{
+    padding: 10px;
+}
+
+#control > #ipt-formula > #formula-ipt
+{
+    border: 1px solid gray;
+    min-height: 100px;
+}

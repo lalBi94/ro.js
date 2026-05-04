@@ -1,12 +1,17 @@
 :root
 {
-    --mainc: rgb(203, 203, 228);
+    --mainc: gray;
 }
 
 body
 {
     font-family: 'Courier New', Courier, monospace;
-    margin: 0 auto;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 0;
+    margin-bottom: 0;
+    background: white;
+    transition: 1s;
 }
 body > section
 {
@@ -15,55 +20,14 @@ body > section
     align-items: center;
     min-height: 100vh;
     gap: 20px;
-    justify-content: center;
-}
-body > section > #control{
-    border: 1px solid black;
-    padding: 20px;
+    justify-content: space-evenly;
 }
 
-
-canvas
+.border-gen
 {
-    cursor: crosshair;
-    border: 1px solid black;
-    padding: 1px;
-    border-radius: 2px;
-}
-
-#scale-stats
-{
-    color: black;
-    padding: 10px;
-}
-#scale-stats > div > button
-{
-    background: gray;
-    color: white;
-    font-weight: bold;
-    width: 50px;
-    
-}
-
-#pointed-dot-stats
-{
-    color: black;
-    padding: 10px;
-    margin-top: 10px;
-}
-
-#pointed-dot-stats > p
-{
-    border: 1px solid var(--mainc);
-}
-
-#ipt-formula
-{
-    padding: 10px;
-}
-
-#ipt-formula > #formula-ipt
-{
-    border: 1px solid gray;
-    min-height: 100px;
+    background: hsl(0 0% 100%);
+    border: 1px solid hsl(220 13% 91%);
+    box-shadow: 
+        0 1px 2px hsl(220 13% 10% / 0.04),
+        0 4px 12px hsl(220 13% 10% / 0.06);
 }
