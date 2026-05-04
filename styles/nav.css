@@ -1,0 +1,29 @@
+nav
+{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+}
+
+nav > #ulinks
+{
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    align-items: center;
+}
+
+nav > #ulinks > li > .dyn-color-bg
+{
+    padding: 10px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    clip-path: polygon(0 50%, 4% 0, 96% 0, 100% 50%, 96% 100%, 4% 100%);
+    border-radius: 5px;
+}
+
+nav > #logo > p > .dyn-color
+{
+    font-size: 3.5rem;
+}

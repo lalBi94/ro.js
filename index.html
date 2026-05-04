@@ -3,36 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="raw.css">
+    
+    <title>Ro.js - Math Analysis Tool</title>
+    
+    <link rel="stylesheet" href="styles/raw.css">
+    <link rel="stylesheet" href="styles/nav.css">
+    <link rel="stylesheet" href="styles/control.css">
+    <link rel="stylesheet" href="styles/info.css">
+    <link rel="stylesheet" href="styles/canvas.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <nav>
+        <div id="logo">
+            <p><span class="dyn-color">\( \rho \)</span>.js</p>
+        </div>
+        
+        <ul id="ulinks">
+            <li>
+                <a href="">GitHub</a>
+            </li>
+
+            <li>
+                <a href="">Licence</a>
+            </li>
+
+            <li>
+                <button class="dyn-color-bg">Download \( \rho \).js</button>
+            </li>
+        </ul>
+    </nav>
+
+    <hr>
+
     <section>
-        <div id="control">
+        <div class="border-gen" id="info">
+            <div>
+                <button class="chapiter">\( f(x) \)</button>
+                |
+                <button class="chapiter"><span class="dyn-color">\( \mathcal{F} \)</span>ourier</button>
+                |
+                <button class="chapiter">\( e^{i{\theta}} \)-Plane</button>
+                |
+                <button class="chapiter">\( \frac{d}{dx} \)</button>
+                |
+                <button class="chapiter">\( \int \)</button>
+                |
+                <button class="chapiter">\( \mathbb{C} \)-plan</button>
+            </div>
+
+            <div>
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Praesentium animi cumque laboriosam itaque modi repudiandae necessitatibus velit sed soluta, ex quis incidunt earum laudantium aspernatur blanditiis exercitationem. Aut, fugiat atque!</p>
+            </div>
+        </div>
+
+        <canvas class="border-gen" id="canvas" width="700" height="700"></canvas>
+
+        <div id="control" class="border-gen">
             <div id="scale-stats">
                 <p><b>Scale =</b> <span id="scale-info"></span></p>
                 <div>
-                    <button id="scale-plus">+</button>
-                    <button id="scale-minus">-</button>
+                    <button class="dyn-color-bg" id="scale-plus">+</button>
+                    <button class="dyn-color-bg" id="scale-minus">-</button>
                 </div>
             </div>
+
+            <hr>
 
             <div id="pointed-dot-stats">
                 <p><b>\(x=\)</b> <span id="pointed-dot-at-x">+0.000</span></p>
                 <p><b>\(y=\)</b> <span id="pointed-dot-at-y">+0.000</span></p>
                 <p><b>\(||y||\):</b> <span id="pointed-dot-at-modulus">+0.000</span></p>
-                <p><b>\( \phi_y \):</b> <span id="pointed-dot-at-phase">+0.000</span></p>
             </div>
+
+            <hr>
 
             <div id="ipt-formula">
                 <p id="formula-latex"></p>
                 <textarea placeholder="f(x)=" type="text" name="" id="formula-ipt">x^2</textarea>
             </div>
-        </div>
 
-        <canvas id="canvas" width="700" height="700">
-        </canvas>
+            <hr>
+
+            <fieldset>
+                <legend>Param:</legend>
+
+                <fieldset>
+                    <legend>Plot Metrics</legend>
+                    
+                    <div>
+                        <label for="max-x">-x-axis limit=</label>
+                        <input name="max-x" placeholder="ex: -50,0" value="-50.0" type="number"/>
+                    </div>
+
+                    <div>
+                        <label for="min-x">+x-axis limit=</label>
+                        <input name="min-x" placeholder="ex: 50,0" value="50.0" type="number"/>
+                    </div>
+
+                    <div>
+                        <label for="max-y">+y-axis limit=</label>
+                        <input name="max-y" placeholder="ex: 50,0" value="50.0" type="number"/>
+                    </div>
+
+                    <div>
+                        <label for="min-y">-y-axis limit=</label>
+                        <input name="min-y" placeholder="ex: -50,0" value="-50.0" type="number"/>
+                    </div>
+
+                    <div>
+                        <label for="min-y">step between dots=</label>
+                        <input name="min-y" placeholder="ex: 50,0" value="0.03" type="number"/>
+                    </div>
+
+                    <div>
+                        <label for="x-tag">x-axis tag:</label>
+                        <input name="x-tag" placeholder="ex: 50,0" value="x" type="text"/>
+                    </div>
+
+                    <div>
+                        <label for="x-tag">y-axis tag:</label>
+                        <input name="x-tag" placeholder="ex: 50,0" value="f(x)" type="text"/>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Lasers</legend>
+                    
+                    <div>
+                        <input type="checkbox" id="scales" name="scales" checked />
+                        <label for="scales">x-axis</label>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="horns" name="horns" />
+                        <label for="horns">y-axis</label>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="horns" name="horns" />
+                        <label for="horns">modulus</label>
+                    </div>
+                </fieldset>
+            </fieldset>
+        </div>
     </section>
 
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>

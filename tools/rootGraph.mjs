@@ -1,4 +1,4 @@
-import CanvasManager from "../canvas_manager.mjs";
+import CanvasManager from "./CanvasManager.mjs";
 import Vector2D from "./Vector2D.mjs";
 
 const isFloat = (str_n) => {
@@ -108,15 +108,26 @@ function showRootReal(cm, scale=5, y_tag="f(x)", x_tag=" x ", dim_x=new Vector2D
  * @param {Vector2D} to 
  * @param {*} w 
  */
-function createLine(ctx, from, to, color="black")
+function createLine(ctx, from, to, color="black", dotted=false)
 {
     ctx.strokeStyle = color
+    
+    if(dotted)
+    {
+        ctx.setLineDash([5, 7]);
+    }
+
     ctx.beginPath();
     ctx.moveTo(from.x, from.y);
     ctx.lineTo(to.x, to.y)
     ctx.closePath();
     ctx.stroke()
     ctx.strokeStyle = "transparent"
+
+    if(dotted)
+    {
+        ctx.setLineDash([]);
+    }
 }
 
 export default {showRootReal, createLine}

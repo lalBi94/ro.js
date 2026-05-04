@@ -73,7 +73,7 @@ svg {
     overflow: hidden;
 }
 button,
-input,
+input:not([type="checkbox"]):not([type="radio"]),
 select,
 textarea,
 optgroup {
