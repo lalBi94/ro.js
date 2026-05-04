@@ -1,0 +1,69 @@
+:root
+{
+    --mainc: rgb(203, 203, 228);
+}
+
+body
+{
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0 auto;
+}
+body > section
+{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    min-height: 100vh;
+    gap: 20px;
+    justify-content: center;
+}
+body > section > #control{
+    border: 1px solid black;
+    padding: 20px;
+}
+
+
+canvas
+{
+    cursor: crosshair;
+    border: 1px solid black;
+    padding: 1px;
+    border-radius: 2px;
+}
+
+#scale-stats
+{
+    color: black;
+    padding: 10px;
+}
+#scale-stats > div > button
+{
+    background: gray;
+    color: white;
+    font-weight: bold;
+    width: 50px;
+    
+}
+
+#pointed-dot-stats
+{
+    color: black;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+#pointed-dot-stats > p
+{
+    border: 1px solid var(--mainc);
+}
+
+#ipt-formula
+{
+    padding: 10px;
+}
+
+#ipt-formula > #formula-ipt
+{
+    border: 1px solid gray;
+    min-height: 100px;
+}

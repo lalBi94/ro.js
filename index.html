@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="raw.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section>
+        <div id="control">
+            <div id="scale-stats">
+                <p><b>Scale =</b> <span id="scale-info"></span></p>
+                <div>
+                    <button id="scale-plus">+</button>
+                    <button id="scale-minus">-</button>
+                </div>
+            </div>
+
+            <div id="pointed-dot-stats">
+                <p><b>\(x=\)</b> <span id="pointed-dot-at-x">+0.000</span></p>
+                <p><b>\(y=\)</b> <span id="pointed-dot-at-y">+0.000</span></p>
+                <p><b>\(||y||\):</b> <span id="pointed-dot-at-modulus">+0.000</span></p>
+                <p><b>\( \phi_y \):</b> <span id="pointed-dot-at-phase">+0.000</span></p>
+            </div>
+
+            <div id="ipt-formula">
+                <p id="formula-latex"></p>
+                <textarea placeholder="f(x)=" type="text" name="" id="formula-ipt">x^2</textarea>
+            </div>
+        </div>
+
+        <canvas id="canvas" width="700" height="700">
+        </canvas>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.1/math.js"></script>
+    <script type="module" src="main.js"></script>
+</body>
+</html>
