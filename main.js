@@ -4,16 +4,20 @@ import functions from "./tools/functions.mjs"
 import Vector2D from "./tools/Vector2D.mjs"
 import Colors from "./tools/Colors.mjs"
 
-// const body = document.querySelector("body");
-// body.innerHTML = body.innerHTML.replaceAll("{{strike}}", "ta mere")
-
+//const & param
 const cm = new CanvasManager()
 const theChoosenOne = Colors.randomColorHex();
 const theOppositeChoosenOne = Colors.complementColorHex(theChoosenOne) 
-let scale = 60
 let plot = undefined;
+
+let formulas_integrations = []
+let integrations_funs_parsed = []
+let formulas_derivatives = []
+let derivatives_funs_parsed = []
 let formulas = []
 let funs = [];
+
+let scale = 60
 let par_min_axis_x_limit = -50;
 let par_max_axis_x_limit = 50;
 let par_max_axis_y_limit = 50;
@@ -24,30 +28,7 @@ let par_step_dx = 0.02;
 let par_axis_x_step = 1;
 let par_axis_y_step = 1;
 let derivative_dx = 0.1;
-
-//fns
-function redraw()
-{
-    cm.clearCtx()
-    plot = rg.showRootReal(
-        cm, 
-        scale, 
-        par_axis_y_tag, 
-        par_axis_x_tag,
-        new Vector2D(par_min_axis_x_limit, par_max_axis_x_limit),
-        new Vector2D(par_max_axis_y_limit, par_min_axis_y_limit),
-        par_axis_x_step,
-        par_axis_y_step
-    )
-    
-    for(let f of funs)
-    {
-        functions.drawFunc(plot, cm, f, par_step_dx, Colors.randomColorHex())
-    }
-
-    formula_latex_$.innerText = formulas.join(" ")
-    MathJax.typesetPromise([formula_latex_$]);
-}
+let integration_dx = 0.1;
 
 //balises
 const stats_scale_$ = document.getElementById("scale-info")
@@ -57,6 +38,8 @@ const btn_scale_minus$ = document.getElementById("scale-minus")
 const x_cursor_$ = document.getElementById("pointed-dot-at-x");
 const y_cursor_$ = document.getElementById("pointed-dot-at-y");
 const modulus_cursor_$ = document.getElementById("pointed-dot-at-modulus");
+const dy_dx_$ = document.getElementById("dy-dx");
+const integration_res_$ = document.getElementById("integration-res");
 
 const formula_ipt_$ = document.getElementById("formula-ipt");
 const formula_latex_$ = document.getElementById("formula-latex");
@@ -77,20 +60,87 @@ const par_y_tag_$ = document.getElementById("par-y-tag");
 const par_x_axis_step_$ = document.getElementById("par-x-axis-step");
 const par_y_axis_step_$ = document.getElementById("par-y-axis-step");
 
-const par_pack = [
-    par_max_x_ipt_$, par_min_x_ipt_$, par_max_y_ipt_$, par_min_y_ipt_$,
-    par_step_btw_dot_$, 
-    par_x_tag_$, par_y_tag_$,
-    par_x_axis_step_$, par_y_axis_step_$
-]
+const par_derivative_tangent_$ = document.getElementById("par-derivative-tangent");
+const par_derivative_dx_$ = document.getElementById("par-derivative-dx");
 
 const par_laser_x_$ = document.getElementById("par-laser-x");
 const par_laser_y_$ = document.getElementById("par-laser-y");
 const par_laser_modulus_$ = document.getElementById("par-laser-modulus");
 
-console.log(par_laser_x_$.checked)
-console.log(par_laser_y_$.checked)
-console.log(par_laser_modulus_$.checked)
+const par_integration_rectangle_$ = document.getElementById("par-integration-rectangle");
+const par_integration_dx_$ = document.getElementById("par-integration-dx");
+
+const par_pack = [
+    par_max_x_ipt_$, par_min_x_ipt_$, par_max_y_ipt_$, par_min_y_ipt_$,
+    par_step_btw_dot_$, 
+    par_x_tag_$, par_y_tag_$,
+    par_x_axis_step_$, par_y_axis_step_$,
+    par_derivative_dx_$,
+    par_integration_dx_$
+]
+
+//fns
+function primitive_evolve(f,a,b)
+{
+    return f(b)-f(a);
+}
+
+function lambdify_2D_from_mathjs(f)
+{
+    return (x) => f.compile().evaluate({x})
+}
+
+function redraw()
+{
+    cm.clearCtx()
+
+    plot = rg.showRootReal(
+        cm, 
+        scale, 
+        par_axis_y_tag, 
+        par_axis_x_tag,
+        new Vector2D(par_min_axis_x_limit, par_max_axis_x_limit),
+        new Vector2D(par_max_axis_y_limit, par_min_axis_y_limit),
+        par_axis_x_step,
+        par_axis_y_step
+    )
+    
+    for(let f of funs)
+    {
+        functions.drawFunc(plot, cm, f, par_step_dx, Colors.randomColorHex())
+    }
+
+    formula_latex_$.innerText = formulas.join(" ")
+    MathJax.typesetPromise([formula_latex_$]);
+
+    if(funs.length > 0 && par_integration_rectangle_$.checked)
+    {
+        for(let f of funs)
+        {
+            for(let i = par_min_axis_x_limit, alpha = plot.min_x_pos; i <= par_max_axis_x_limit; i+=integration_dx)
+            {
+                const valueInCanvasBase = cm.toCanvasBase(new Vector2D(0, -f(i)*scale));
+
+                const delta_x = new Vector2D(integration_dx*scale, 0);
+                const beta = alpha.add(new Vector2D(delta_x.x, 0))
+                const gamma = new Vector2D(
+                    beta.x, 
+                    valueInCanvasBase.y
+                )
+                const tau = gamma.add(new Vector2D(-delta_x.x, 0))
+
+                cm.createLine(alpha, beta, "red", false);
+                cm.createLine(beta, gamma, "red", false);
+                cm.createLine(gamma, tau, "red", false);
+                cm.createLine(tau, alpha, "red", false);
+
+                alpha = beta
+            }
+        }
+    }
+}
+
+// process
 
 par_max_x_ipt_$.value = par_max_axis_x_limit
 par_min_x_ipt_$.value = par_min_axis_x_limit
@@ -101,6 +151,8 @@ par_x_tag_$.value = par_axis_x_tag
 par_y_tag_$ .value = par_axis_y_tag
 par_x_axis_step_$.value = par_axis_x_step
 par_y_axis_step_$.value = par_axis_y_step
+par_derivative_dx_$.value = derivative_dx;
+par_integration_dx_$.value = integration_dx;
 
 stats_scale_$.innerText = "x" + scale
 
@@ -182,9 +234,23 @@ for(let par of par_pack)
                 }
                 par_axis_y_step = val
                 break;
-        }
 
-        console.log(e.target.id, e.target.value)
+            case "par-derivative-dx":
+                if(val === 0.0) {
+                    par_derivative_dx_$.value = derivative_dx;
+                    return;
+                }
+                derivative_dx = val
+                break;
+
+            case "par-integration-dx":
+                if(val === 0.0) {
+                    par_integration_dx_$.value = integration_dx;
+                    return;
+                }
+                integration_dx = val
+                break;
+        }
 
         redraw()
     })
@@ -195,18 +261,50 @@ formula_ipt_$.addEventListener("change", (e) => {
     {
         formulas = []
         funs = []
+        derivatives_funs_parsed = []
+        formulas_derivatives = []
 
         const splited = e.target.value.replaceAll("\n", "").split(";");
 
         let root = 'f', i = 0;
+
+        integration_res_$.innerText = ""
+
         for(let spl of splited)
         {
             if(!spl) continue;
+
             const formula_parsed = math.parse(spl)
-            formulas.push(`\\[ ${String.fromCharCode(root.charCodeAt(0)+i)}(x)=${formula_parsed.toTex()} \\]`);
-            funs.push((x) => (formula_parsed.compile().evaluate({x})))
-            i++;
+            const current_letter_fun = String.fromCharCode(root.charCodeAt(0)+i);
+
+            try
+            {                
+                const formula_derivative = math.derivative(formula_parsed, "x");
+                const formula_integration_raw = nerdamer(`integrate(${spl})`).text();
+                const formula_integration = math.parse(formula_integration_raw);
+                const formula_integration_lambdify = lambdify_2D_from_mathjs(formula_integration);
+                const integration_res = primitive_evolve(formula_integration_lambdify, par_min_axis_x_limit, par_max_axis_x_limit)
+
+                console.log(`\\[ ${current_letter_fun.toUpperCase()}(x)=${nerdamer.convertToLaTeX(formula_integration_raw)}=${integration_res.toFixed(3)} \\] `)
+
+                integration_res_$.innerText += `\\[ ${current_letter_fun.toUpperCase()}(x)=${nerdamer.convertToLaTeX(formula_integration_raw)}=${integration_res.toFixed(3)} \\ \\ \\ [a=${par_min_axis_x_limit}, \\ b=${par_max_axis_x_limit}] \\]`;
+
+                formulas_derivatives.push(`\\[ ${current_letter_fun}(x)'=${formula_derivative.toTex()}={{res}} \\] `)
+                derivatives_funs_parsed.push(formula_derivative)
+            } catch(err)
+            {
+                console.log(err);
+            } finally
+            {
+                formulas.push(`\\[ ${current_letter_fun}(x)=${formula_parsed.toTex()} \\]`);
+                funs.push((x) => (formula_parsed.compile().evaluate({x})))
+                i++;
+            }
+
+
         }
+
+        MathJax.typesetPromise([integration_res_$]);
 
         redraw()
     } catch(err) {console.log(err)};
@@ -229,6 +327,11 @@ let stop_watch = false;
 
 cm.canvas.addEventListener("click", () => {
     stop_watch = !stop_watch;
+    
+    if(stop_watch)
+    {
+        cm.canvasTakeCoffee()
+    } 
 })
 
 let pending = false;
@@ -245,6 +348,21 @@ const process = (event) => {
         .scale(1/scale)
 
     const compute_points = []
+    const compute_derivative_points = []
+
+    for(let dfp of derivatives_funs_parsed)
+    {
+        compute_derivative_points.push(dfp.evaluate({x: xy_cursor.x}))
+    }
+
+    dy_dx_$.innerText = ""; 
+    for(let dfs in formulas_derivatives)
+    {
+        dy_dx_$.innerText += 
+            formulas_derivatives[dfs].replaceAll("{{res}}", compute_derivative_points[dfs].toFixed(2));
+    }
+
+    MathJax.typesetPromise([dy_dx_$]);
 
     for(let f of funs)
     {
@@ -255,6 +373,7 @@ const process = (event) => {
                 -scale*f(xy_cursor.x)
             )
         )
+
         
         const next_dx_value = f(xy_cursor.x+derivative_dx)
         const next_localisation = cm.toCanvasBase(
@@ -270,23 +389,25 @@ const process = (event) => {
         })
 
         // derivative
-        const vec = new Vector2D(xy_cursor.x, value);
-        const vec_next = new Vector2D(xy_cursor.x+derivative_dx, next_dx_value);
-        const vec_step = vec_next.add(vec.scale(-1));
-
-        const lambda_derivative_eqwa = (t) => 
-            new Vector2D(vec.x + t*vec_step.x, -vec.y - t*vec_step.y).scale(scale)
-
-        for(let i = -10; i < 10; i+=0.02)
+        if(par_derivative_tangent_$.checked)
         {
-            const compute_ld = cm.toCanvasBase(lambda_derivative_eqwa(i))
-            cm.createDot(compute_ld,0.2,0,2*Math.PI,"black", false, true);
-        }
-        
-        cm.createLine(localisation, next_localisation, "black", false);
+            const vec = new Vector2D(xy_cursor.x, value);
+            const vec_next = new Vector2D(xy_cursor.x+derivative_dx, next_dx_value);
+            const vec_step = vec_next.add(vec.scale(-1));
 
-        cm.createDot(localisation,5,0,2*Math.PI,"black", false, true);
-        cm.createDot(next_localisation,5,0,2*Math.PI,"black", false, true);
+            const lambda_derivative_eqwa = (t) => 
+                new Vector2D(vec.x + t*vec_step.x, -vec.y - t*vec_step.y).scale(scale)
+
+            for(let i = -10; i < 10; i+=0.02)
+            {
+                const compute_ld = cm.toCanvasBase(lambda_derivative_eqwa(i))
+                cm.createDot(compute_ld,0.2,0,2*Math.PI,"black", false, true);
+            }
+            
+            cm.createLine(localisation, next_localisation, "black", false);
+            cm.createDot(localisation,5,0,2*Math.PI,"black", false, true);
+            cm.createDot(next_localisation,5,0,2*Math.PI,"black", false, true);
+        }
     }
 
     x_cursor_$.innerText = (xy_cursor.x >= 0 ? "+" : "-") + (Math.abs(xy_cursor.x).toFixed(3));
@@ -335,6 +456,11 @@ const process = (event) => {
     if(modulus_cursor_$.innerText.length === 0)
     {  
         modulus_cursor_$.innerText = "[NO FUNCTION]"
+    }
+
+    if (dy_dx_$.innerText.length === 0)
+    {
+        dy_dx_$.innerText = "[NO FUNCTION]"
     }
 }
 cm.canvas.addEventListener('mousemove', (event) => {
