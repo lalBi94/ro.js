@@ -10,6 +10,7 @@
 {
     color: black;
     padding: 10px;
+    gap: 20px;
 }
 
 #control > #scale-stats > div > button
@@ -34,6 +35,11 @@
 #control > #ipt-formula
 {
     padding: 10px;
+}
+
+#control > #ipt-formula > textarea
+{
+    width: 100%;
 }
 
 #control > #ipt-formula > #formula-ipt

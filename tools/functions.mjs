@@ -19,11 +19,8 @@ function drawFunc(plot, cm, func=(x)=>Math.cos(x), x_step=1, color="black")
             if (!Number.isFinite(y_res)) continue;
             if (Math.abs(y_res) > plot.dim_x.y) continue;
             const pos = new Vector2D(plot.h_center.x+(i* plot.scale), plot.h_center.x-y_res* plot.scale);
-            ctx.beginPath();
-            ctx.strokeStyle = color
-            ctx.arc(pos.x, pos.y, 1, 0, 2 * Math.PI, false);
-            ctx.stroke();
-            ctx.closePath();
+            
+            cm.createDot(pos,1,0,2*Math.PI,color, false, true);
         } catch(err)
         {
             console.log(err)
