@@ -20,9 +20,10 @@ let par_max_axis_y_limit = 50;
 let par_min_axis_y_limit = -50;
 let par_axis_x_tag = "x";
 let par_axis_y_tag = "y";
-let par_step_dx = 0.03;
+let par_step_dx = 0.02;
 let par_axis_x_step = 1;
 let par_axis_y_step = 1;
+let derivative_dx = 0.1;
 
 //fns
 function redraw()
@@ -224,28 +225,68 @@ btn_scale_minus$.addEventListener("click", () => {
     redraw()
 })
 
-cm.canvas.addEventListener('click', (event) => {
-    if(!plot) return;
-    redraw()
+let stop_watch = false;
 
+cm.canvas.addEventListener("click", () => {
+    stop_watch = !stop_watch;
+})
+
+let pending = false;
+const process = (event) => {
+    if(stop_watch) return;
+
+    redraw()
     const rect = cm.canvas.getBoundingClientRect();
     const x = (event.clientX - rect.left);
     const y = (event.clientY - rect.top);
 
     const alpha = new Vector2D(x, y)
-    const xy_cursor = alpha.add(new Vector2D(-cm.center.x, -cm.center.y)).scale(1/scale);
+    const xy_cursor = alpha.add(new Vector2D(-cm.center.x, -cm.center.y))
+        .scale(1/scale)
 
     const compute_points = []
 
     for(let f of funs)
     {
-        compute_points.push({
-            value: f(xy_cursor.x), 
-            localisation: new Vector2D(
-                cm.center.x + xy_cursor.x * scale, 
-                cm.center.y - f(xy_cursor.x) * scale
+        const value = f(xy_cursor.x)
+        const localisation = cm.toCanvasBase(
+            new Vector2D(
+                scale * xy_cursor.x, 
+                -scale*f(xy_cursor.x)
             )
+        )
+        
+        const next_dx_value = f(xy_cursor.x+derivative_dx)
+        const next_localisation = cm.toCanvasBase(
+            new Vector2D(
+                scale * (xy_cursor.x + derivative_dx), 
+                -scale*f(xy_cursor.x+derivative_dx)
+            )
+        );
+
+        compute_points.push({
+            value,
+            localisation,
         })
+
+        // derivative
+        const vec = new Vector2D(xy_cursor.x, value);
+        const vec_next = new Vector2D(xy_cursor.x+derivative_dx, next_dx_value);
+        const vec_step = vec_next.add(vec.scale(-1));
+
+        const lambda_derivative_eqwa = (t) => 
+            new Vector2D(vec.x + t*vec_step.x, -vec.y - t*vec_step.y).scale(scale)
+
+        for(let i = -10; i < 10; i+=0.02)
+        {
+            const compute_ld = cm.toCanvasBase(lambda_derivative_eqwa(i))
+            cm.createDot(compute_ld,0.2,0,2*Math.PI,"black", false, true);
+        }
+        
+        cm.createLine(localisation, next_localisation, "black", false);
+
+        cm.createDot(localisation,5,0,2*Math.PI,"black", false, true);
+        cm.createDot(next_localisation,5,0,2*Math.PI,"black", false, true);
     }
 
     x_cursor_$.innerText = (xy_cursor.x >= 0 ? "+" : "-") + (Math.abs(xy_cursor.x).toFixed(3));
@@ -270,19 +311,40 @@ cm.canvas.addEventListener('click', (event) => {
         
         if(par_laser_x_$.checked)
         {
-            rg.createLine(cm.ctx, cp.localisation, new Vector2D(cm.center.x, cp.localisation.y), "blue", true)
+            cm.createLine(cp.localisation, new Vector2D(cm.center.x, cp.localisation.y), "blue", true)
         }
         
         if(par_laser_y_$.checked)
         {
-            rg.createLine(cm.ctx, cp.localisation, new Vector2D(cp.localisation.x, cm.center.y), "red", true)
+            cm.createLine(cp.localisation, new Vector2D(cp.localisation.x, cm.center.y), "red", true)
         }
         
         if(par_laser_modulus_$.checked)
         {
-            rg.createLine(cm.ctx, cp.localisation, cm.center, "green", true)
+            cm.createLine(cp.localisation, cm.center, "green", true)
         }
         
         i++;
+    }
+
+    if(y_cursor_$.innerText.length === 0)
+    {  
+        y_cursor_$.innerText = "[NO FUNCTION]"
+    }
+
+    if(modulus_cursor_$.innerText.length === 0)
+    {  
+        modulus_cursor_$.innerText = "[NO FUNCTION]"
+    }
+}
+cm.canvas.addEventListener('mousemove', (event) => {
+    if(!plot) return;
+
+    if (!pending) {
+        pending = true;
+        requestAnimationFrame(() => {
+            process(event)
+            pending = false;
+        });
     }
 });

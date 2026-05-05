@@ -30,8 +30,18 @@ export default class Vector2D
         return new Vector2D((this.x_val + other.x), (this.y_val + other.y))
     }
 
+    scalarProduct(other)
+    {
+        return new Vector2D((this.x_val * other.x), (this.y_val * other.y))
+    }
+
     scale(k)
     {
         return new Vector2D(this.x_val*k, this.y_val*k)
+    }
+
+    dump()
+    {
+        return new Vector2D(this.x_val, this.y_val)
     }
 }
