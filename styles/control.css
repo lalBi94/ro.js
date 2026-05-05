@@ -6,30 +6,32 @@
     flex:1;
 }
 
-#control > #scale-stats
+#control > fieldset > #scale-stats
 {
     color: black;
     padding: 10px;
     gap: 20px;
 }
 
-#control > #scale-stats > div > button
+#control > fieldset > #scale-stats > div > button
 {
     font-weight: bold;
     width: 50px;
     
 }
 
-#control > #pointed-dot-stats
+#control > fieldset > #pointed-dot-stats
 {
     color: black;
     padding: 10px;
     margin-top: 10px;
 }
 
-#control > #pointed-dot-stats > p
+#control > fieldset > #pointed-dot-stats > p
 {
     border: 1px solid var(--mainc);
+    padding: 5px;
+    text-align: center;
 }
 
 #control > #ipt-formula
@@ -40,6 +42,7 @@
 #control > #ipt-formula > textarea
 {
     width: 100%;
+    padding: 2px;
 }
 
 #control > #ipt-formula > #formula-ipt

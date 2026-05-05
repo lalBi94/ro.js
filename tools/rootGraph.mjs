@@ -94,7 +94,7 @@ function showRootReal(cm, scale=5, y_tag="f(x)", x_tag=" x ", dim_x=new Vector2D
         cm.createLine(pos.add(new Vector2D(-3, 0)), pos.add(new Vector2D(+3, 0)), "black")
     }
 
-    ctx.fillStyle = "red"
+    ctx.fillStyle = "blue"
     ctx.font = "20px 'Courier New'";
     ctx.fillText(y_tag, axes_config.h_center.x+50, 40);
 

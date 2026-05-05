@@ -19,6 +19,13 @@ export default class CanvasManager
     {
         return this.center.add(vec);
     }
+
+    canvasTakeCoffee()
+    {
+        this.ctx.fillStyle = "black"
+        this.ctx.font = "30px 'Courier New'";
+        this.ctx.fillText("⏸", this.canvas.width-60, 60);
+    }
     
     /**
     * 
