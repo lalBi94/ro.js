@@ -13,6 +13,22 @@ export default class CanvasManager
          */
         this.ctx = this.canvas.getContext("2d")
         this.center = new Vector2D(this.canvas.width/2, this.canvas.height/2);
+        this.stop_watch_state = false;
+    }
+
+    get stop_watch()
+    {
+        return this.stop_watch_state;
+    }
+
+    toggleStopWatch()
+    {
+        this.stop_watch_state = !this.stop_watch_state;
+        
+        if(this.stop_watch_state)
+        {
+            this.canvasTakeCoffee()
+        }
     }
 
     toCanvasBase(vec)
@@ -99,4 +115,6 @@ export default class CanvasManager
     {
         this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height)
     }
+
+    
 }

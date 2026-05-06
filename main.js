@@ -80,16 +80,6 @@ const par_pack = [
 ]
 
 //fns
-function primitive_evolve(f,a,b)
-{
-    return f(b)-f(a);
-}
-
-function lambdify_2D_from_mathjs(f)
-{
-    return (x) => f.compile().evaluate({x})
-}
-
 function redraw()
 {
     cm.clearCtx()
@@ -119,7 +109,10 @@ function redraw()
         {
             for(let i = par_min_axis_x_limit, alpha = plot.min_x_pos; i <= par_max_axis_x_limit; i+=integration_dx)
             {
-                const valueInCanvasBase = cm.toCanvasBase(new Vector2D(0, -f(i)*scale));
+                const f_value = functions.safeComputing(f, i);
+                if(!f_value) continue;
+
+                const valueInCanvasBase = cm.toCanvasBase(new Vector2D(0, -f_value*scale));
 
                 const delta_x = new Vector2D(integration_dx*scale, 0);
                 const beta = alpha.add(new Vector2D(delta_x.x, 0))
@@ -282,8 +275,8 @@ formula_ipt_$.addEventListener("change", (e) => {
                 const formula_derivative = math.derivative(formula_parsed, "x");
                 const formula_integration_raw = nerdamer(`integrate(${spl})`).text();
                 const formula_integration = math.parse(formula_integration_raw);
-                const formula_integration_lambdify = lambdify_2D_from_mathjs(formula_integration);
-                const integration_res = primitive_evolve(formula_integration_lambdify, par_min_axis_x_limit, par_max_axis_x_limit)
+                const formula_integration_lambdify = functions.lambdify_2D_from_mathjs(formula_integration);
+                const integration_res = functions.primitive_evolve(formula_integration_lambdify, par_min_axis_x_limit, par_max_axis_x_limit)
 
                 console.log(`\\[ ${current_letter_fun.toUpperCase()}(x)=${nerdamer.convertToLaTeX(formula_integration_raw)}=${integration_res.toFixed(3)} \\] `)
 
@@ -293,7 +286,6 @@ formula_ipt_$.addEventListener("change", (e) => {
                 derivatives_funs_parsed.push(formula_derivative)
             } catch(err)
             {
-                console.log(err);
             } finally
             {
                 formulas.push(`\\[ ${current_letter_fun}(x)=${formula_parsed.toTex()} \\]`);
@@ -307,7 +299,7 @@ formula_ipt_$.addEventListener("change", (e) => {
         MathJax.typesetPromise([integration_res_$]);
 
         redraw()
-    } catch(err) {console.log(err)};
+    } catch(err) {};
 });
 
 btn_scale_plus$.addEventListener("click", () => {
@@ -323,20 +315,12 @@ btn_scale_minus$.addEventListener("click", () => {
     redraw()
 })
 
-let stop_watch = false;
-
 cm.canvas.addEventListener("click", () => {
-    stop_watch = !stop_watch;
-    
-    if(stop_watch)
-    {
-        cm.canvasTakeCoffee()
-    } 
+    cm.toggleStopWatch();
 })
 
-let pending = false;
 const process = (event) => {
-    if(stop_watch) return;
+    if(cm.stop_watch) return;
 
     redraw()
     const rect = cm.canvas.getBoundingClientRect();
@@ -356,30 +340,37 @@ const process = (event) => {
     }
 
     dy_dx_$.innerText = ""; 
+
     for(let dfs in formulas_derivatives)
     {
         dy_dx_$.innerText += 
-            formulas_derivatives[dfs].replaceAll("{{res}}", compute_derivative_points[dfs].toFixed(2));
+            formulas_derivatives[dfs].replaceAll(
+                "{{res}}", 
+                compute_derivative_points[dfs].toFixed(2)
+            );
     }
 
     MathJax.typesetPromise([dy_dx_$]);
 
     for(let f of funs)
     {
-        const value = f(xy_cursor.x)
+        const f_val = functions.safeComputing(f, xy_cursor.x);
+        const f_val_dx = functions.safeComputing(f, xy_cursor.x + derivative_dx);
+        if(!f_val || !f_val_dx) continue;
+
+        const value = f_val
         const localisation = cm.toCanvasBase(
             new Vector2D(
                 scale * xy_cursor.x, 
-                -scale*f(xy_cursor.x)
+                -scale * f_val
             )
         )
 
-        
-        const next_dx_value = f(xy_cursor.x+derivative_dx)
+        const next_dx_value = f_val_dx
         const next_localisation = cm.toCanvasBase(
             new Vector2D(
                 scale * (xy_cursor.x + derivative_dx), 
-                -scale*f(xy_cursor.x+derivative_dx)
+                -scale*f_val_dx
             )
         );
 
@@ -463,14 +454,16 @@ const process = (event) => {
         dy_dx_$.innerText = "[NO FUNCTION]"
     }
 }
+
+let pending_cmv = false;
 cm.canvas.addEventListener('mousemove', (event) => {
     if(!plot) return;
 
-    if (!pending) {
-        pending = true;
+    if (!pending_cmv) {
+        pending_cmv = true;
         requestAnimationFrame(() => {
             process(event)
-            pending = false;
+            pending_cmv = false;
         });
     }
 });
