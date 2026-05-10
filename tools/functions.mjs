@@ -39,19 +39,46 @@ function safeComputing(f, at)
     }
 }
 
-function primitive_evolve(f,a,b)
+function primitiveEvolve(f,a,b)
 {
     const b_res = safeComputing(f, b);
     const a_res = safeComputing(f, a);
 
-    if(!b_res || !a_res) return undefined;
-
-    return b_res-a_res;
+    return safeComputing((x) => b_res-a_res, 0)
 }
 
-function lambdify_2D_from_mathjs(f)
+function createLineLambda(from, to, scale)
+{
+    const vec_step = to.add(from.scale(-1));
+    return (t) => new Vector2D(from.x + t*vec_step.x, -from.y - t*vec_step.y).scale(scale)
+}
+
+function lambdify2DFromMathjs(f)
 {
     return (x) => f.compile().evaluate({x})
 }
 
-export default {drawFunc, safeComputing, primitive_evolve, lambdify_2D_from_mathjs}
+/**
+ * Reconnait que les structures {re,im}
+ * @param {number | {re: number, im: number}} val 
+ * @returns 
+ */
+function isComplex(val)
+{
+    try
+    {
+        return (val.re || val.im) ? true : false
+    } catch(err)
+    {
+        return false;
+    }
+}
+
+export default {
+    drawFunc, 
+    safeComputing, 
+    primitiveEvolve, 
+    lambdify2DFromMathjs, 
+    createLineLambda,
+    isComplex
+}

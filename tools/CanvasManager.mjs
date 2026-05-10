@@ -2,12 +2,12 @@ import Vector2D from "./Vector2D.mjs";
 
 export default class CanvasManager
 {
-    constructor()
+    constructor(tag)
     {
         /**
          * @type {HTMLCanvasElement}
          */
-        this.canvas = document.getElementById("canvas");
+        this.canvas = document.getElementById(tag);
         /**
          * @type {CanvasRenderingContext2D}
          */
@@ -31,9 +31,38 @@ export default class CanvasManager
         }
     }
 
+    /**
+     * Retourne les coordonnees d'un vecteur depuis l'origine du canvas.
+     * @example cm.toCanvasBase(new Vector2D(0,0)) => new Vector2D(350,350) // car [x: 350px, y: 350px] est le millieu d'un canvas quelconque qui fait 700x700
+     * @param {Vector2D} vec Le vecteur qui doit subir le changement de base
+     * @returns {Vector2D} Les coordonees rebaser
+     */
     toCanvasBase(vec)
     {
         return this.center.add(vec);
+    }
+
+    /**
+     * 
+     * @param {Vector2D} vec 
+     * @returns 
+     */
+    toNumericalBase(vec)
+    {
+        return vec.add(this.center.scale(-1));
+    }
+
+    /**
+     * Savoir si un element peut etre visible par le canvas. Avec [w=700, h=700] => 0 < vec.x < 700 et 0 < vec.y < 700  
+     * @param {Vector2D} vec 
+     * @returns {{x: boolean, y: boolean}}
+     */
+    canUserSeeThisDraw(vec)
+    {  
+        return {
+            x: ((vec.x >= 0) && (vec.x <= this.canvas.width)), 
+            y: ((vec.y >= 0) && (vec.y <= this.canvas.height))
+        };
     }
 
     canvasTakeCoffee()
@@ -60,8 +89,10 @@ export default class CanvasManager
         }
 
         this.ctx.beginPath();
+        
         this.ctx.moveTo(from.x, from.y);
         this.ctx.lineTo(to.x, to.y)
+
         this.ctx.stroke()
         this.ctx.strokeStyle = "transparent"
 

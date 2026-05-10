@@ -21,19 +21,19 @@ function showRootReal(cm, scale=5, y_tag="f(x)", x_tag=" x ", dim_x=new Vector2D
     const axes_config = {
         h_center: new Vector2D(canvas.width/2, 0),
         v_center: new Vector2D(0, canvas.height/2),
-        max_y_pos: new Vector2D(cm.center.x, cm.center.y-(scale*dim_y.x)),
-        max_x_pos: new Vector2D(cm.center.x+(scale*dim_x.y), cm.center.y),
-        min_y_pos: new Vector2D(cm.center.x, cm.center.y-(scale*dim_y.y)),
-        min_x_pos: new Vector2D(cm.center.x+(scale*dim_x.x), cm.center.y),
+        max_y_pos: cm.toCanvasBase(new Vector2D(0, dim_y.x*scale)), //+y
+        min_y_pos: cm.toCanvasBase(new Vector2D(0, dim_y.y*scale)), //-y
+        max_x_pos: cm.toCanvasBase(new Vector2D(dim_x.y*scale, 0)), // +x
+        min_x_pos: cm.toCanvasBase(new Vector2D(dim_x.x*scale, 0)), //-x
         dim_x,
         dim_y,
         scale
     }
-        
-    //x
-    cm.createLine(cm.center, axes_config.max_x_pos, "black")
-    cm.createLine(cm.center, axes_config.min_x_pos, "black")
 
+    cm.createLine(axes_config.min_x_pos, axes_config.max_x_pos, "black")
+    cm.createLine(axes_config.min_y_pos, axes_config.max_y_pos, "black")
+
+    // x
     // // graduation
     for (
         let i = dim_x.x, pos = axes_config.min_x_pos;  
@@ -68,14 +68,11 @@ function showRootReal(cm, scale=5, y_tag="f(x)", x_tag=" x ", dim_x=new Vector2D
     ctx.fillText(x_tag, canvas.width-40, axes_config.v_center.y+40);
     
     //y
-    cm.createLine(cm.center, axes_config.max_y_pos, "black")
-    cm.createLine(cm.center, axes_config.min_y_pos, "black")
-
     // // graduation
     for (
-        let i = dim_y.x, pos = axes_config.max_y_pos;  
-        i >= dim_y.y; 
-        i-=y_step, pos = pos.add(new Vector2D(0, y_step*scale))
+        let i = dim_y.y, pos = axes_config.min_y_pos;  
+        i <= dim_y.x; 
+        i+=y_step, pos = pos.add(new Vector2D(0, y_step*scale))
     ) {
         if (scale >= 40)
         {

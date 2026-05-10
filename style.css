@@ -13,14 +13,12 @@ body
     background: white;
     transition: 1s;
 }
-body > section
+
+#fx-section
 {
     display: flex;
-    width: 100%;
-    align-items: center;
-    min-height: 100vh;
-    gap: 20px;
-    justify-content: space-evenly;
+    flex-direction: row;
+    gap: 10px;
 }
 
 .border-gen

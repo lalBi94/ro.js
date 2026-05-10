@@ -1,5 +1,40 @@
 canvas
 {
     cursor: crosshair;
-    flex: 1;
+    border-radius: 10px;
+    background-color: transparent !important;
+}
+
+#canvas-layers
+{
+    position: relative;
+}
+
+#canvas-layers > #canvas
+{
+    z-index: 999;
+}
+
+#canvas-layers > #canvas-lasers
+{
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+}
+
+#canvas-layers > #canvas-rect-integration
+{
+    position: absolute;
+    z-index: -2;
+    top: 0;
+    left: 0;
+}
+
+#canvas-layers > img
+{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 50px;
 }

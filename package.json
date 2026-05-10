@@ -1,12 +1,15 @@
 {
   "name": "ro.js",
   "scripts": {
-    "deploy": "gh-pages -d ."
+    "deploy": "gh-pages -d .",
+    "gen": "node generateCurse.js"
   },
   "author": "lalBi94",
   "license": "MIT",
   "packageManager": "pnpm@10.13.1",
+  "type": "commonjs",
   "dependencies": {
-    "gh-pages": "^6.3.0"
+    "gh-pages": "^6.3.0",
+    "path": "^0.12.7"
   }
 }

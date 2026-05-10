@@ -4,6 +4,7 @@ nav
     flex-direction: row;
     width: 100%;
     justify-content: space-between;
+    align-items: center;
 }
 
 nav > #ulinks
@@ -20,7 +21,7 @@ nav > #ulinks > li > .dyn-color-bg
     font-weight: bold;
     letter-spacing: 2px;
     clip-path: polygon(0 50%, 4% 0, 96% 0, 100% 50%, 96% 100%, 4% 100%);
-    border-radius: 5px;
+    border-radius: 10px;
 }
 
 nav > #logo > p > .dyn-color

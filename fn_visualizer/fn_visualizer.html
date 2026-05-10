@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Ro.js - Math Analysis Tool</title>
+    
+    <link rel="stylesheet" href="../styles/raw.css">
+    <link rel="stylesheet" href="../components/nav.css">
+    <link rel="stylesheet" href="../styles/control.css">
+    <link rel="stylesheet" href="../styles/info.css">
+    <link rel="stylesheet" href="../styles/canvas.css">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.23/dist/lenis.css">
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+
+    <script src="../components/navbar.mjs"></script>
+</head>
+<body>
+    <nav-bar/>
+
+    <p id="test"></p>
+
+    <hr>
+
+    <section id="fx-section">
+        <div class="border-gen" id="info">
+            <div>
+                <p>
+                    Dans cette partie, vous pouvez écrire des fonctions dans l'input "\( y= \)". 
+                    Ces fonctions sont definit ainsi \[ f(x)=y, \forall{x \in \mathbb{R}} \land \forall{y \in \mathbb{C}} \]
+                    Vous avez accès à un visualisateur de fonction réglable. Attention, les resultats dans \( \mathbb{C} \) seront indiquer sur l'indicateur \( y \) mais ne pourront pas etre afficher sur le graphe.<br><br>
+                    
+                    Dans la partie droite figure dans l'ordre :
+                    <ul>
+                        <li>- Configuration du zoom.</li><br>
+                        <li>- La position x du curseur sur l'indicateur \( x \).</li><br>
+                        <li>- La valeur de la (ou les) fonction(s) sur l'indicateur \( y \).</li><br>
+                        <li>- La distance de \( (x, y) \) depuis l'origine \( (0, 0) \) sur l'indicateur \( || \ (x, y) \ || = \sqrt{x^{2} + y^{2}} \). </li><br>
+                        <li>- La dérivée de chaque fonction entrée et les valeurs au point x.</li><br>
+                        <li>- Une primitive de chaque fonction entrée et leurs valeurs aux bornes (si definit) \( [a=x_{min}, \ b=x_{max}] \).</li><br>
+                        <li>- Des inputs pour modifier les propriétés du graphique.</li><br>
+                        <li>- Des checkboxs pour afficher ou non les projections qui pointent vers \( x, \ y, \ || \ (x, y) \ ||  \) depuis le curseur.</li><br>
+                        <li>- Configuration et affichage de la tangente représentative de la dérivation.</li><br>
+                        <li>- Configuration et affichage des rectangles représentatifs de l'intégration.</li>
+                    </ul>
+
+                    <br>
+                    
+                    <fieldset> 
+                        <legend>Liste de fonctions possibles</legend>
+                        <p>
+                            Voici une liste des fonctions supportées par <span class="dyn-color">\( \rho \)</span>.js. 
+                            Il est possible de toutes les combiner. Comme dit plus haut, l'outil peut etre limiter sur tout ce qui touche les nombres complexes.
+                        </p>
+
+                        <p>
+                            \[ \forall{r,x,base \in \mathbb{R}} \]
+                        </p>
+                        
+                        <ul>
+                            <li>\( abs(x) \)</li>
+                            <li>\( sign(x) \)</li>
+                            <li>\( -x \)</li>
+                            <li>\( x \)</li>
+                            <li>\( floor(x) \)</li>
+                            <li>\( ceil(x) \)</li>
+                            <li>\( round(x) \)</li>
+                            <li>\( \sqrt{x} \) => sqrt(x)</li>
+                            <li>\( cbrt(x) \)</li>
+                            <li>\( x^r \) => x^r</li>
+                            <li>\( r^x \) => r^x</li>
+                            <li>\( e^x \) => e^x</li>
+                            <li>\( exp(x) \) => e^x</li>
+                            <li>\( log(x) \)</li>
+                            <li>\( ln(x) \) => log(x, e)</li>
+                            <li>\( log(x, base) \)</li>
+                            <li>\( x! \)</li>
+                            <li>\( gamma(x) \)</li>
+                            <li>\( erf(x) \)</li>
+                            <li>\( sin(x) \)</li>
+                            <li>\( cos(x) \)</li>
+                            <li>\( tan(x) \)</li>
+                            <li>\( asin(x) \)</li>
+                            <li>\( acos(x) \)</li>
+                            <li>\( atan(x) \)</li>
+                            <li>\( sinh(x) \)</li>
+                            <li>\( cosh(x) \)</li>
+                            <li>\( tanh(x) \)</li>
+                            <li>\( asinh(x) \)</li>
+                            <li>\( acosh(x) \)</li>
+                            <li>\( atanh(x) \)</li>
+                            <li>\( sec(x) \)</li>
+                            <li>\( csc(x) \)</li>
+                            <li>\( cot(x) \)</li>
+                        </ul>
+                    </fieldset>
+                </p>
+            </div>
+        </div>
+
+        <div id="canvas-layers">
+            <canvas class="border-gen" id="canvas" width="700" height="700"></canvas>
+            <canvas class="border-gen" id="canvas-lasers" width="700" height="700"></canvas>
+            <canvas class="border-gen" id="canvas-rect-integration" width="700" height="700"></canvas>
+            <img src="../favicon.png" alt="logo du site">
+        </div>
+
+        <div id="control" class="border-gen" data-lenis-prevent>
+            <fieldset>
+                <legend>Info</legend>
+
+                <div id="scale-stats">
+                    <p>Zoom = <span id="scale-info"></span></p>
+                    <div>
+                        <button class="dyn-color-bg" id="scale-plus">+</button>
+                        <button class="dyn-color-bg" id="scale-minus">-</button>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div id="pointed-dot-stats">
+                    <p><b>\(x=\)</b> <span id="pointed-dot-at-x">+0.000</span></p>
+                    <p><b>\(y=\)</b> <span id="pointed-dot-at-y">+0.000</span></p>
+                    <p><b>\(|| \ (x, y) \ ||\):</b> <span id="pointed-dot-at-modulus">+0.000</span></p>
+                    <p><b>\( \frac{dy}{dx} \):</b> <span id="dy-dx"></span></p>
+                    <p><b>\( \int_{a}^{b}{y \ dx} \):</b> <span id="integration-res">[NOT DEFINED]</span></p>
+                </div>
+            </fieldset>
+
+            <hr>
+
+            <div id="ipt-formula">
+                <fieldset>
+                    <legend>Functions</legend>
+
+                    <div>
+                        <p id="formula-latex"></p>
+                    </div>
+
+                    <div id="formula-container">
+                        <label for="formula-ipt">y=</label>
+                        <textarea 
+                            placeholder="Enter functions like this : &#10;7log(x, 10);&#10;x^2;&#10;sin(3x);&#10;..." 
+                            type="text" 
+                            name="formula-ipt" 
+                            id="formula-ipt"></textarea>
+                    </div>
+                </fieldset>
+            </div>
+
+            <hr>
+
+            <fieldset>
+                <legend>Param:</legend>
+
+                <fieldset id="">
+                    <legend>Plot Metrics</legend>
+                    
+                    <div>
+                        <label for="min-x">min. x-axis=</label>
+                        <input id="par-min-x" name="min-x" placeholder="ex: 50,0" type="number"/>
+                    </div>
+
+                    <div>
+                        <label for="max-x">max. x-axis=</label>
+                        <input id="par-max-x" name="max-x" placeholder="ex: -50,0" type="number"/>
+                    </div>
+
+                    <div>
+                        <label for="min-y">min. y-axis=</label>
+                        <input id="par-min-y" name="min-y" placeholder="ex: -50,0" type="number"/>
+                    </div>
+
+                    <div>
+                        <label for="max-y">max. y-axis=</label>
+                        <input id="par-max-y" name="max-y" placeholder="ex: 50,0" type="number"/>
+                    </div>
+
+                    <div>
+                        <label for="step-btw-dot">x step=</label>
+                        <input id="par-step-btw-dot" name="step-btw-dot" placeholder="ex: 50,0" type="number"/>
+                    </div>
+
+                    <div>
+                        <label for="x-tag">x-axis name:</label>
+                        <input id="par-x-tag" name="x-tag" placeholder="ex: 50,0" type="text"/>
+                    </div>
+
+                    <div>
+                        <label for="y-tag">y-axis name:</label>
+                        <input id="par-y-tag" name="y-tag" placeholder="ex: 50,0" type="text"/>
+                    </div>
+
+                    <div>
+                        <label for="x-axis-step">x-axis step=</label>
+                        <input id="par-x-axis-step" name="x-axis-step" placeholder="ex: 1" type="number"/>
+                    </div>
+
+                    <div>
+                        <label for="y-axis-step">y-axis step=</label>
+                        <input id="par-y-axis-step" name="y-axis-step" placeholder="ex: 1" type="number"/>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>(\(x, \ y, \ ||(x,y)|| \))-Projection</legend>
+                    
+                    <div>
+                        <input type="checkbox" id="par-laser-x" name="par-laser-x" checked />
+                        <label for="par-laser-x">x-axis</label>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="par-laser-y" id="par-laser-y" name="par-laser-y" checked />
+                        <label for="par-laser-y">y-axis</label>
+                    </div>
+
+                    <div>
+                        <input type="checkbox" id="par-laser-modulus" id="par-laser-modulus" name="par-laser-modulus" checked />
+                        <label for="par-laser-modulus">modulus</label>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>(\( \frac{dy}{dx} \))-Derivative</legend>
+                    
+                    <div>
+                        <input type="checkbox" id="par-derivative-tangent" name="par-derivative-tangent" checked />
+                        <label for="par-derivative-tangent">Tangent</label>
+                    </div>
+
+                    <div>
+                        <label for="par-derivative-dx">dx=</label>
+                        <input id="par-derivative-dx" name="par-derivative-dx" placeholder="ex: 0,01" type="number"/>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>(\( \int{y \ dx} \))-Integration</legend>
+                    
+                    <div>
+                        <input type="checkbox" id="par-integration-rectangle" name="par-integration-rectangle" />
+                        <label for="par-integration-rectangle">Show Rectangle</label>
+                    </div>
+
+                    <div>
+                        <label for="par-integration-dx">dx=</label>
+                        <input id="par-integration-dx" name="par-integration-dx" placeholder="ex: 0,1" type="number"/>
+                    </div>
+                </fieldset>
+            </fieldset>
+        </div>
+    </section>
+
+    <script src="../libs/nerdamer.js"></script>
+
+    <script src="../libs/lenis.js"></script>
+    <script>
+        new Lenis({ autoRaf: true });
+    </script>
+
+    <script src="../libs/mathjax.js"></script>
+    <script src="../libs/math.js"></script>
+
+    <script type="module" src="fn_visualizer.mjs"></script>
+</body>
+</html>
